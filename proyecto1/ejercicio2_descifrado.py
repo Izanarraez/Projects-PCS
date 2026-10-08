@@ -1,0 +1,42 @@
+from string import ascii_uppercase as alfa
+
+cifrado = "KVIRVESVKKVIRKAFKDHKARBNRHKDVSTARKAREKDHSVIMREDSKARPDSOKVHNUUREKARHMDSXHFSOFEEVTHVUVNKEFXRVNHUVEKNSRVEKVKFJRFEPHFXFDSHKFHRFVUKEVNIMRHFSOIZVYYVHDSXRSOKARPKVODRKVHMRRYSVPVERFSOIZFHMRRYKVHFZTRRSOKARARFEKFLARFSOKARKAVNHFSOSFKNEFMHAVLJHKAFKUMRHADHARDEKVKDHFLVSHNPPFKDVSORQVNKMZKVIRTDHAOKVODRKVHMRRYKVHMRRYYRELAFSLRKVOERFPFZKARERHKARENIUVEDSKAFKHMRRYVUORFKATAFKOERFPHPFZLVPRTARSTRAFQRHANUUMROVUUKADHPVEKFMLVDMPNHKXDQRNHYFNHRKARERHKARERHYRLKKAFKPFJRHLFMFPDKZVUHVMVSXMDURUVETAVTVNMOIRFEKARTADYHFSOHLVESHVUKDPRKAVYYERHHVEHTEVSXKARYEVNOPFSHLVSKNPRMZKARYFSXHVUODHYEDCOMVQRKARMFTHORMFZKARDSHVMRSLRVUVUUDLRFSOKARHYNESHKAFKYFKDRSKPREDKVUKANSTVEKAZKFJRHTARSARADPHRMUPDXAKADHBNDRKNHPFJRTDKAFIFERIVOJDSTAVTVNMOUFEORMHIRFEKVXENSKFSOHTRFKNSOREFTRFEZMDURINKKAFKKAROERFOVUHVPRKADSXFUKREORFKAKARNSODHLVQREROLVNSKEZUEVPTAVHRIVNESSVKEFQRMMREERKNESHYNCCMRHKARTDMMFSOPFJRHNHEFKAREIRFEKAVHRDMMHTRAFQRKAFSUMZKVVKAREHKAFKTRJSVTSVKVUKANHLVSHLDRSLROVKAPFJRLVTFEOHVUNHFMMFSOKANHKARSFKDQRANRVUERHVMNKDVSDHHDLJMDROVRETDKAKARYFMRLFHKVUKAVNXAKFSORSKREYEDHRHVUXERFKYDKAFSOPVPRSKTDKAKADHERXFEOKARDELNEERSKHKNESFTEZFSOMVHRKARSFPRVUFLKDVS"
+
+dicc = {}
+
+for letra in alfa:
+    dicc[letra] = cifrado.count(letra)
+
+#print(dicc)
+
+dicc_ord = dict(sorted(dicc.items(), key=lambda item: item[1], reverse=True))
+
+print(dicc_ord)
+
+cifrado = cifrado.replace('R','e')
+cifrado = cifrado.replace('K','t')
+cifrado = cifrado.replace('V','o')
+cifrado = cifrado.replace('F','a')
+cifrado = cifrado.replace('D','i')
+cifrado = cifrado.replace('H','s')
+cifrado = cifrado.replace('A','h')
+cifrado = cifrado.replace('E','r')
+cifrado = cifrado.replace('S','n')
+cifrado = cifrado.replace('O','d')
+cifrado = cifrado.replace('M','l')
+cifrado = cifrado.replace('N','u')
+cifrado = cifrado.replace('U','f')
+cifrado = cifrado.replace('P','m')
+cifrado = cifrado.replace('T','w')
+cifrado = cifrado.replace('L','c')
+cifrado = cifrado.replace('Y','p')
+cifrado = cifrado.replace('I','b')
+cifrado = cifrado.replace('X','g')
+cifrado = cifrado.replace('Z','y')
+cifrado = cifrado.replace('J','k')
+cifrado = cifrado.replace('Q','v')
+cifrado = cifrado.replace('C','z')
+cifrado = cifrado.replace('B','q')
+print(cifrado)
+
+#Analisis de frecuencias y de diccionario
