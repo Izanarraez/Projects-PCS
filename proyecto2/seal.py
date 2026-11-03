@@ -126,7 +126,7 @@ def generar_claves(a,n,L):
             A = desp_cir(A,9)
 
             Q = (Q+B) & 0x7fc
-            C = (B + T[Q//4]) & 0xFFFFFFFF
+            C = (C + T[Q//4]) & 0xFFFFFFFF
             B = desp_cir(B,9)
         
             P = (P+C) & 0x7fc
@@ -179,45 +179,60 @@ def cifrado_descrifrado(datos,claves):
 
         xor = byte_dato ^ byte_flujo
 
-        cifrado.append(xor)
+        cifrado.frombytes(xor.to_bytes(1, byteorder='big'))
 
-    return bytes(cifrado)
+    return cifrado.tobytes()
 
 def main():
-    # 1. Preparar el mensaje que quieres cifrar
-    texto_plano = "Hola, este es un mensaje secreto procesado con SEAL!"
-    mensaje_bytes = texto_plano.encode('utf-8') 
-    
-    # 2. Inicialización del sistema SEAL
-    print("1. Fabricando clave maestra secreta...")
-    clave = crear_clave_maestra()
-    
-    print("2. Expandiendo clave (Generando tablas T, R, S)...")
-    a = expansion_clave(clave)
 
-    # 3. Preparar los parámetros de entrada y generar el flujo
-    n = 0                         
-    L_bytes = len(mensaje_bytes)  
+    salida = True
 
-    print("3. Generando el flujo de claves (Keystream)...")
-    flujo_de_claves = generar_claves(a, n, L_bytes)
+    while(salida):
+        print("1.Codificar")
+        print("2.Decodificar")
+        print("3.Mostrar variables")
 
-    # ---------------------------------------------------------
-    # 4. El Cifrado Real usando la nueva función
-    # ---------------------------------------------------------
-    mensaje_cifrado = cifrado_descrifrado(mensaje_bytes, flujo_de_claves)
-    
-    print("\n4. Mensaje CIFRADO (datos incomprensibles):")
-    print(f"   {mensaje_cifrado}")
+        decision = int(input("Elige una opcion:"))
 
-    # ---------------------------------------------------------
-    # 5. Descifrar (Volver a usar la misma función)
-    # ---------------------------------------------------------
-    # Le pasamos el texto ilegible y el mismo flujo, y el XOR lo revierte
-    mensaje_descifrado_bytes = cifrado_descrifrado(mensaje_cifrado, flujo_de_claves)
-    
-    print("\n5. Mensaje DESCIFRADO:")
-    print(f"   {mensaje_descifrado_bytes.decode('utf-8')}")
+        match(decision):
+            case 1:
+                mensaje = input("Introduce un texto:")
+                n = int(input("Introduce posicion de cifrado (n):"))
+                
+                print("1.Fabricando clave.........")
+                clave = crear_clave_maestra()
+
+                print("2.Expandiendo clave........")
+                a = expansion_clave(clave)
+
+                mensaje_bytes = mensaje.encode('utf-8')
+                L = len(mensaje_bytes)
+
+                print("3.Generar flujo de claves..")
+                claves = generar_claves(a,n,L)
+
+                print("4.Cifrado..................\n")
+                mensaje_cifrado = cifrado_descrifrado(mensaje_bytes,claves)
+
+
+            case 2:
+                n = int(input("Introduce posicion de cifrado (n):"))
+
+                L = len(mensaje_cifrado)
+
+                claves = generar_claves(a,n,L)
+                mensaje_descifrado = cifrado_descrifrado(mensaje_cifrado,claves)
+
+                print(f"Mensaje descifrado:{mensaje_descifrado.decode('utf-8')}\n")
+
+            case 3:
+                print(f"Clave maestra: {clave.hex()}")
+                print(f"Flujo de claves: {claves.hex()}")
+                print(f"Mensaje cifrado: {mensaje_cifrado.hex()}")
+                print(f"Mensaje descifrado:{mensaje_descifrado.hex()}")
+
+            case 4:
+                salida = False
 
 if __name__ == "__main__":
     main()
