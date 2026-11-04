@@ -5,36 +5,29 @@ from bitarray import bitarray
 def crear_clave_maestra():
     return secrets.token_bytes(20) #para resistir un ataque de numeros seudoaleatorios (calve de 20 bytes)
 
-def expansion_clave(clave): #clave maestra (coge los 20 bytes y los estira hasta crear 1024 numeros enteros de 32 bits)
+def obtener_palabra(clave,i):
+    cont = i // 5
+    resto = i % 5 
 
-    num_gen = []
+    bytes_cont = cont.to_bytes(4, byteorder='big') #pasa cont a bytes (4 bytes)
 
-    cont = 0
+    datos_entr = clave + bytes_cont
+    bloque_aleatorio = hashlib.sha1(datos_entr).digest()
 
-    while(len(num_gen) < 1024):
+    bits = bitarray()
+    bits.frombytes(bloque_aleatorio)
 
-        bytes_cont = cont.to_bytes(4, byteorder='big') #pasa cont a bytes (4 bytes)
+    cortes = bits[resto*32:(resto+1)*32]
 
-        datos_entr = clave + bytes_cont
-        bloque_aleatorio = hashlib.sha1(datos_entr).digest()
+    return int.from_bytes(cortes.tobytes(), byteorder='big')
 
-        bits = bitarray()
-        bits.frombytes(bloque_aleatorio)
-
-        for x in range(0,160,32):
-            cortes = bits[x:x+32]
-            
-            transf = int.from_bytes(cortes.tobytes(), byteorder='big')
-
-            num_gen.append(transf)
-
-        cont += 1
+def expansion_clave(clave): #clave maestra (coge los 20 bytes)
 
     #Tablas de memoria precalculadas de sha-1
-    T = num_gen[:512] #Trabla transformacion principal
-    R = num_gen[512:768] #Tabla inicializacion
-    S = num_gen[768:1024] #Tabla de salida
-
+    T = [obtener_palabra(clave,i) for i in range(512)] # 0 a 512
+    S = [obtener_palabra(clave, 0x1000 + i) for i in range(256)] #(0x1000 es 4096) 
+    R = [obtener_palabra(clave, 0x2000 + i) for i in range(256)] #(0x2000 es 8192)
+    
     return T,R,S
 
 def desp_cir(x,n):
@@ -43,7 +36,6 @@ def desp_cir(x,n):
 
 
 def initialize(n,l,R,T): 
-    #Las tablas T,R,S tienen que generar un flujo de datos aleatorio con la misma longitud del mensaje
 
     A = n ^ R[4*l]
     B = desp_cir(n,8) ^ R[(4*l)+1]
@@ -188,9 +180,10 @@ def main():
     salida = True
 
     while(salida):
-        print("1.Codificar")
-        print("2.Decodificar")
+        print("1.Enviar mensaje (cifrar)")
+        print("2.Recibir mensaje (descifrar)")
         print("3.Mostrar variables")
+        print("4.Salir")
 
         decision = int(input("Elige una opcion:"))
 
@@ -216,32 +209,44 @@ def main():
 
 
             case 2:
-                n = int(input("Introduce posicion de cifrado (n):"))
 
+                try:
+                    mensaje_cifrado
+                except NameError:
+                    print("Primero hay que enviar el mensaje\n")
+                    continue
+
+                print("1.Clave maestra recibida.................\n")
+                print("2.Indice n recibido.................\n")
+
+                print("3.Expandiendo clave........")
+                a = expansion_clave(clave)
+    
                 L = len(mensaje_cifrado)
-
+                
+                print("4.Generar flujo de claves..")
                 claves = generar_claves(a,n,L)
+
                 mensaje_descifrado = cifrado_descrifrado(mensaje_cifrado,claves)
 
                 print(f"Mensaje descifrado:{mensaje_descifrado.decode('utf-8')}\n")
 
             case 3:
-                print(f"Clave maestra: {clave.hex()}")
+
+                try:
+                    mensaje_cifrado
+                except NameError:
+                    print("Primero hay que enviar el mensaje\n")
+                    continue
+                
+                print(f"\nClave maestra: {clave.hex()}")
                 print(f"Flujo de claves: {claves.hex()}")
+                print(f"Indice n: {"0x{:08X}".format(n)}")
                 print(f"Mensaje cifrado: {mensaje_cifrado.hex()}")
-                print(f"Mensaje descifrado:{mensaje_descifrado.hex()}")
+                print(f"Mensaje descifrado:{mensaje_descifrado.hex()}\n")
 
             case 4:
                 salida = False
 
 if __name__ == "__main__":
     main()
-
-
-            
-
-
-
-
-
-
