@@ -3,7 +3,7 @@ import hashlib
 from bitarray import bitarray
 
 def crear_clave_maestra():
-    return secrets.token_bytes(20) #para resistir un ataque de numeros seudoaleatorios (calve de 20 bytes)
+    return secrets.token_bytes(20)
 
 def obtener_palabra(clave,i):
     cont = i // 5
@@ -31,7 +31,7 @@ def expansion_clave(clave): #clave maestra (coge los 20 bytes)
     return T,R,S
 
 def desp_cir(x,n):
-    #Como python no tiene limete de memoria matematica esto hace es recortal lo que pase de 32 bits (0xFFFFFFFF)
+    #Como python no tiene limete de memoria matematica esto hace es recortar lo que pase de 32 bits (0xFFFFFFFF)
     return ((x >> n) | (x << (32 - n))) & 0xFFFFFFFF 
 
 
@@ -216,9 +216,8 @@ def main():
                     print("Primero hay que enviar el mensaje\n")
                     continue
 
-                print("1.Clave maestra recibida.................\n")
-                print("2.Indice n recibido.................\n")
-
+                print("1.Clave maestra recibida.................")
+                print("2.Indice n recibido.................")
                 print("3.Expandiendo clave........")
                 a = expansion_clave(clave)
     
